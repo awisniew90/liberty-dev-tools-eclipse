@@ -12,9 +12,6 @@
 *******************************************************************************/
 package io.openliberty.tools.eclipse.test.it.utils;
 
-import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.allOf;
-import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -389,7 +386,7 @@ public class SWTBotPluginOperations {
         }
 
         bot.menu("Window").menu("Preferences").click();
-        bot.tree().getTreeItem("Liberty").select();
+        bot.tree().getTreeItem("Liberty").select().setFocus();
         bot.button("Restore Defaults").click();
         bot.button("Apply and Close").click();
     }
