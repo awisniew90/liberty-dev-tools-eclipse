@@ -12,9 +12,6 @@
 *******************************************************************************/
 package io.openliberty.tools.eclipse.test.it.utils;
 
-import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.allOf;
-import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -190,7 +187,7 @@ public class SWTBotPluginOperations {
      */
     public static void launchStartWithDashboardAction(SWTWorkbenchBot bot, SWTBotView dashboard, String item) {
         SWTBotRootMenu appCtxMenu = getAppContextMenu(bot, dashboard, item);
-        SWTBotMenu startAction = appCtxMenu.contextMenu(DashboardView.APP_MENU_ACTION_START);
+        SWTBotMenu startAction = appCtxMenu.contextMenu("TEST"); // DashboardView.APP_MENU_ACTION_START);
         startAction.click();
     }
 

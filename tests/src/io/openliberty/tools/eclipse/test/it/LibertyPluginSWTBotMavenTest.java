@@ -14,7 +14,6 @@ package io.openliberty.tools.eclipse.test.it;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -32,11 +31,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.openliberty.tools.eclipse.CommandBuilder;
 import io.openliberty.tools.eclipse.CommandBuilder.CommandNotFoundException;
-import io.openliberty.tools.eclipse.LibertyNature;
-import io.openliberty.tools.eclipse.Project;
+import io.openliberty.tools.eclipse.test.it.utils.CaptureScreenshotOnFailure;
 import io.openliberty.tools.eclipse.test.it.utils.DisabledOnMac;
 import io.openliberty.tools.eclipse.test.it.utils.LibertyPluginTestUtils;
 import io.openliberty.tools.eclipse.test.it.utils.SWTBotPluginOperations;
@@ -46,6 +45,7 @@ import io.openliberty.tools.eclipse.ui.launch.LaunchConfigurationDelegateLaunche
 /**
  * Tests Open Liberty Eclipse plugin functions.
  */
+@ExtendWith(CaptureScreenshotOnFailure.class)
 public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTest {
 
     /**
