@@ -141,7 +141,7 @@ public class ProjectTab {
             }
         };
 
-        terminalService.openConsole(getProperties(projectPath, envs, command), done);
+        terminalService.openConsole(getProperties(projectPath, envs, "\"" + command + "\""), done);
 
         if (Trace.isEnabled()) {
             Trace.getTracer().traceExit(Trace.TRACE_UI);
