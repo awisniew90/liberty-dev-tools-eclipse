@@ -52,6 +52,8 @@ import io.openliberty.tools.eclipse.test.it.utils.SWTBotPluginOperations;
 import io.openliberty.tools.eclipse.ui.dashboard.DashboardView;
 import io.openliberty.tools.eclipse.ui.launch.LaunchConfigurationDelegateLauncher;
 
+import com.automation.remarks.junit5.Video;
+
 /**
  * Tests Open Liberty Eclipse plugin functions.
  */
@@ -261,6 +263,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * Tests the start with parameters menu action on a dashboard listed application.
      */
     @Test
+    @Video
     public void testLibertyConfigurationTabsExist() {
 
         Shell configShell = launchRunConfigurationsDialogFromAppRunAs(MVN_APP_NAME);
