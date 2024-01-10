@@ -26,7 +26,21 @@
     <properties>
         <testAppImportWait>60000</testAppImportWait>
     </properties>
-
+    
+    <!--
+    <dependencies>
+		<dependency>
+			<groupId>com.automation-remarks</groupId>
+  		    <artifactId>video-recorder-junit5</artifactId>
+  			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.automation-remarks</groupId>
+  		    <artifactId>video-recorder-core</artifactId>
+  			<version>2.0</version>
+		</dependency>
+	</dependencies>
+    -->
     <build>
         <plugins>
             <plugin>
@@ -40,6 +54,10 @@
                     <trimStackTrace>false</trimStackTrace>
                     <runOrder>alphabetical</runOrder>
                     <systemProperties>
+						<!--
+                        <video.screen.size>1024x768</video.screen.size>
+                        <video.save.mode>ALL</video.save.mode>
+                        -->
                         <org.eclipse.swtbot.search.timeout>20000</org.eclipse.swtbot.search.timeout>
                         <io.liberty.tools.eclipse.tests.mvnexecutable.path>${mvnPath}</io.liberty.tools.eclipse.tests.mvnexecutable.path>
                         <io.liberty.tools.eclipse.tests.app.import.wait>${testAppImportWait}</io.liberty.tools.eclipse.tests.app.import.wait>
@@ -52,6 +70,7 @@
                 <artifactId>target-platform-configuration</artifactId>
                 <version>${tycho.version}</version>
                 <configuration>
+					<!-- <pomDependencies>wrapAsBundle</pomDependencies> -->
                     <!-- The following dependencies are required for test processing when initiated through the command  -->
                     <!-- line (i.e. mvn install).                                                                        -->
                     <!-- When the tests are processed through the command line, a basic Eclipse instance is created      -->

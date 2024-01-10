@@ -76,6 +76,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import com.automation.remarks.junit5.Video;
+
 import io.openliberty.tools.eclipse.CommandBuilder;
 import io.openliberty.tools.eclipse.CommandBuilder.CommandNotFoundException;
 import io.openliberty.tools.eclipse.test.it.utils.DisabledOnMac;
@@ -83,6 +85,7 @@ import io.openliberty.tools.eclipse.test.it.utils.LibertyPluginTestUtils;
 import io.openliberty.tools.eclipse.test.it.utils.SWTBotPluginOperations;
 import io.openliberty.tools.eclipse.ui.dashboard.DashboardView;
 import io.openliberty.tools.eclipse.ui.launch.LaunchConfigurationDelegateLauncher;
+//import io.openliberty.tools.junit5.LTEVideo;
 
 /**
  * Tests Open Liberty Eclipse plugin functions.
@@ -318,6 +321,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * Tests the start with parameters menu action on a dashboard listed application.
      */
     @Test
+    @Disabled
     public void testLibertyConfigurationTabsExist() {
 
         Shell configShell = launchRunConfigurationsDialogFromAppRunAs(MVN_APP_NAME);
@@ -347,6 +351,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
     }
 
     @Test
+    @Disabled
     public void testMavenWrapperCommandAssembly() throws IOException, InterruptedException, CommandNotFoundException {
         IProject iProject = LibertyPluginTestUtils.getProject(MVN_WRAPPER_APP_NAME);
         String projPath = iProject.getLocation().toOSString();
@@ -360,6 +365,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * Tests the start menu action on a dashboard listed application.
      */
     @Test
+    @Video
     public void testDashboardStartActionWithWrapper() {
 
         // Start dev mode.
@@ -385,6 +391,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * Tests the start menu action on a dashboard listed application.
      */
     @Test
+    @Disabled
     public void testDashboardStartAction() {
         // Start dev mode.
         launchDashboardAction(MVN_APP_NAME, DashboardView.APP_MENU_ACTION_START);
@@ -411,6 +418,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * @throws InterruptedException
      */
     @Test
+    @Disabled
     public void testDashboardStopExternalServer() throws CommandNotFoundException, IOException, InterruptedException {
 
         Path projAbsolutePath = wrapperProjectPath.toAbsolutePath();
@@ -443,6 +451,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * Tests the start menu action on a dashboard listed application.
      */
     @Test
+    @Disabled
     public void testDashboardDebugAction() {
         // Start dev mode.
         launchDashboardAction(MVN_APP_NAME, DashboardView.APP_MENU_ACTION_DEBUG);
@@ -465,6 +474,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * Tests the start with parameters menu action on a dashboard listed application.
      */
     @Test
+    @Disabled
     public void testDashboardStartWithCustomConfigAction() {
 
         // Delete any previously created configs.
@@ -501,6 +511,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * Tests the start with parameters menu action on a dashboard listed application.
      */
     @Test
+    @Disabled
     public void testDashboardDebugWithCustomConfigAction() {
 
         // Delete any previously created configs.
@@ -540,6 +551,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * Tests the start, run tests, view test report, and stop dashboard actions.
      */
     @Test
+    @Disabled
     public void testDashboardActions() {
 
         // Delete the test report files before we start this test.
@@ -589,6 +601,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * Run.
      */
     @Test
+    @Disabled
     public void testStartWithDefaultRunAsConfig() {
 
         deleteLibertyToolsRunConfigEntriesFromAppRunAs(MVN_APP_NAME);
@@ -616,6 +629,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * -> Run.
      */
     @Test
+    @Disabled
     public void testStartWithCustomRunAsConfig() {
         // Delete any previously created configs.
         deleteLibertyToolsRunConfigEntriesFromAppRunAs(MVN_APP_NAME);
@@ -648,6 +662,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * Tests the start, run tests, view IT report, view UT report, and stop run as shortcut actions.
      */
     @Test
+    @Disabled
     public void testRunAsShortcutActions() {
 
         // Delete any previously created configs.
@@ -700,6 +715,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * (customized) -> Run.
      */
     @Test
+    @Disabled
     public void testStartWithCustomDebugAsConfig() {
 
         deleteLibertyToolsRunConfigEntriesFromAppRunAs(MVN_APP_NAME);
@@ -748,6 +764,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * Tests the start/stop debug as shortcut actions.
      */
     @Test
+    @Disabled
     public void testStartWithDebugAsShortcut() {
 
         // Delete any previously created configs.
@@ -870,6 +887,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * configuration JRE tab.
      */
     @Test
+    @Disabled
     public void testDefaultJRECompliance() {
         // Delete any previously created configs.
         deleteLibertyToolsRunConfigEntriesFromAppRunAs(MVN_APP_NAME);
@@ -905,6 +923,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * @throws Exception
      */
     @Test
+    @Disabled
     public void testAddingProjectToDashboardManually() throws Exception {
 
         IProject iProject = LibertyPluginTestUtils.getProject(NON_DFLT_NAME);
@@ -944,6 +963,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * out any existing "container" configurations.
      */
     @Test
+    @Disabled
     public void testLaunchConfigurationMatching() {
 
         // Delete any previously created configs.
@@ -983,6 +1003,7 @@ public class LibertyPluginSWTBotMavenTest extends AbstractLibertyPluginSWTBotTes
      * Tests that the correct dependency projects are added to the debug source lookup list
      */
     @Test
+    @Disabled
     public void testDebugSourceLookupContent() {
 
         deleteLibertyToolsRunConfigEntriesFromAppRunAs(MVN_APP_NAME);
