@@ -98,6 +98,24 @@
             <enabled>false</enabled>
           </snapshots>
         </repository>
+        
+        <!-- Artifactory for LCLS -->
+        <repository>
+        	<id>liberty-devex</id>
+        	<name>Liberty Devex Artifactory</name>
+        	<releases>
+          		<enabled>false</enabled>
+          		<updatePolicy>always</updatePolicy>
+          		<checksumPolicy>warn</checksumPolicy>
+        	</releases>
+        	<snapshots>
+          		<enabled>true</enabled>
+          		<updatePolicy>never</updatePolicy>
+          		<checksumPolicy>fail</checksumPolicy>
+        	</snapshots>
+        	<url>https://na.artifactory.swg-devops.com/artifactory/hyc-liberty-tools-team-maven-local</url>
+        	<layout>default</layout>
+      	</repository>
 	</repositories>
 
 	<build>

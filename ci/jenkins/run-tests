@@ -44,12 +44,14 @@ pipeline {
                     script {
                         try {
                             wrap([$class: 'Xvfb', installationName: 'gui-test', autoDisplayName: true, debug: true, parallelBuild: true, screen: '1680x1050x24']) {
-                                sh "metacity --sm-disable --replace &"
-                                sh '''
-                                   MVNPATH="$(dirname $(which mvn))/.."
-                                   GRADLEPATH="$(dirname $(which gradle))/.."
-                                   mvn clean verify -DmvnLogFile -DmvnPath=$MVNPATH -DgradlePath=$GRADLEPATH -Dtycho.disableP2Mirrors=true -Declipse.target=1Q2024 -Dosgi.debug=./tests/resources/ci/debug.opts -DtestAppImportWait=120000 -Dtycho.showEclipseLog -e -X
-                                '''
+                                withCredentials([usernamePassword(credentialsId: 'lcls.artifactory', usernameVariable: 'ART_USER', passwordVariable: 'ART_TOKEN')]) {
+	                                sh "metacity --sm-disable --replace &"
+	                                sh '''
+	                                   MVNPATH="$(dirname $(which mvn))/.."
+	                                   GRADLEPATH="$(dirname $(which gradle))/.."
+	                                   mvn clean verify -s maven-settings.xml -DmvnLogFile -DmvnPath=$MVNPATH -DgradlePath=$GRADLEPATH -Dtycho.disableP2Mirrors=true -Declipse.target=1Q2024 -Dosgi.debug=./tests/resources/ci/debug.opts -DtestAppImportWait=120000 -Dtycho.showEclipseLog -e -X
+	                                '''
+	                            }
                             }
                         } finally {
                             sh "find tests -type f -name \"lte-dev-mode-output-*.log\""

@@ -11,8 +11,8 @@ pipeline {
             steps {
                 dir('liberty-tools-eclipse') {
                     // Clone git repo
-                    git branch: 'main',
-                        url: 'https://github.com/OpenLiberty/liberty-tools-eclipse.git'
+                    git branch: 'lcls-artifactory',
+                        url: 'https://github.com/awisniew90/liberty-tools-eclipse.git'
                 }
             }
         }
@@ -20,7 +20,9 @@ pipeline {
         stage('Build') {
             steps {
                 dir('liberty-tools-eclipse') {
-                    sh "mvn clean install -DskipTests"
+                    withCredentials([usernamePassword(credentialsId: 'lcls.artifactory', usernameVariable: 'ART_USER', passwordVariable: 'ART_TOKEN')]) {
+                        sh "mvn clean install -DskipTests -s maven-settings.xml -X"
+                    }
                 }
             }
         }
