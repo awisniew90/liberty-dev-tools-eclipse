@@ -32,7 +32,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.viewers.ISelection;
@@ -52,6 +54,8 @@ import io.openliberty.tools.eclipse.logging.Logger;
 import io.openliberty.tools.eclipse.logging.Trace;
 import io.openliberty.tools.eclipse.messages.Messages;
 import io.openliberty.tools.eclipse.ui.dashboard.DashboardView;
+import io.openliberty.tools.eclipse.ui.launch.LaunchConfigurationDelegateLauncher.RuntimeEnv;
+import io.openliberty.tools.eclipse.ui.launch.LaunchConfigurationHelper;
 import io.openliberty.tools.eclipse.ui.terminal.ProjectTab;
 import io.openliberty.tools.eclipse.ui.terminal.ProjectTab.State;
 import io.openliberty.tools.eclipse.ui.terminal.ProjectTabController;
@@ -153,8 +157,10 @@ public class DevModeOperations {
      * @param parms The configuration parameters to be used when starting dev mode.
      * @param javaHomePath The configuration java installation home to be set in the terminal running dev mode.
      * @param mode The configuration mode.
+     * 
+     * @throws Exception
      */
-    public void start(IProject iProject, String parms, String javaHomePath, ILaunch launch, String mode) {
+    public void start(IProject iProject, String parms, String javaHomePath, ILaunch launch, String mode) throws Exception {
 
         if (Trace.isEnabled()) {
             Trace.getTracer().traceEntry(Trace.TRACE_TOOLS, new Object[] { iProject, parms, javaHomePath, mode });
@@ -166,6 +172,7 @@ public class DevModeOperations {
                 Trace.getTracer().trace(Trace.TRACE_TOOLS, msg + " No-op.");
             }
             ErrorHandler.processErrorMessage(NLS.bind(Messages.start_no_project_found, null), true);
+            terminateLaunch(iProject);
             return;
         }
 
@@ -193,6 +200,7 @@ public class DevModeOperations {
                             + ". No-op. ProjectTabController: " + projectTabController);
                 }
                 ErrorHandler.processErrorMessage(NLS.bind(Messages.start_already_issued, projectName), true);
+                terminateLaunch(iProject);
                 return;
             }
         }
@@ -202,12 +210,14 @@ public class DevModeOperations {
         try {
             project = projectModel.getProject(projectName);
             if (project == null) {
+                launch.terminate();
                 throw new Exception("Unable to find internal instance of project " + projectName);
             }
 
             // Get the absolute path to the application project.
             String projectPath = project.getPath();
             if (projectPath == null) {
+                terminateLaunch(iProject);
                 throw new Exception("Unable to find the path to selected project " + projectName);
             }
 
@@ -231,6 +241,7 @@ public class DevModeOperations {
             } else if (buildType == Project.BuildType.GRADLE) {
                 cmd = CommandBuilder.getGradleCommandLine(projectPath, "libertyDev " + startParms, pathEnv, true);
             } else {
+                terminateLaunch(iProject);
                 throw new Exception("Unexpected project build type: " + buildType + ". Project " + projectName
                         + "does not appear to be a Maven or Gradle built project.");
             }
@@ -247,12 +258,14 @@ public class DevModeOperations {
             if (Trace.isEnabled()) {
                 Trace.getTracer().trace(Trace.TRACE_TOOLS, msg, e);
             }
+            terminateLaunch(iProject);
             return;
         } catch (Exception e) {
             if (Trace.isEnabled()) {
                 Trace.getTracer().trace(Trace.TRACE_TOOLS, "An error was detected during the start request on project " + projectName, e);
             }
             ErrorHandler.processErrorMessage(NLS.bind(Messages.start_general_error, projectName), e, true);
+            terminateLaunch(iProject);
             return;
         }
 
@@ -268,8 +281,10 @@ public class DevModeOperations {
      * @param parms The configuration parameters to be used when starting dev mode.
      * @param javaHomePath The configuration java installation home to be set in the terminal running dev mode.
      * @param mode The configuration mode.
+     * 
+     * @throws Exception
      */
-    public void startInContainer(IProject iProject, String parms, String javaHomePath, ILaunch launch, String mode) {
+    public void startInContainer(IProject iProject, String parms, String javaHomePath, ILaunch launch, String mode) throws Exception {
 
         if (Trace.isEnabled()) {
             Trace.getTracer().traceEntry(Trace.TRACE_TOOLS, new Object[] { iProject, parms, javaHomePath, mode });
@@ -281,6 +296,7 @@ public class DevModeOperations {
                 Trace.getTracer().trace(Trace.TRACE_TOOLS, msg + " No-op.");
             }
             ErrorHandler.processErrorMessage(NLS.bind(Messages.start_container_no_project_found, null), true);
+            terminateLaunch(iProject);
             return;
         }
 
@@ -308,6 +324,7 @@ public class DevModeOperations {
                             + ". No-op. ProjectTabController: " + projectTabController);
                 }
                 ErrorHandler.processErrorMessage(NLS.bind(Messages.start_container_already_issued, projectName), true);
+                terminateLaunch(iProject);
                 return;
             }
         }
@@ -317,12 +334,14 @@ public class DevModeOperations {
         try {
             project = projectModel.getProject(projectName);
             if (project == null) {
+                terminateLaunch(iProject);
                 throw new Exception("Unable to find internal instance of project " + projectName);
             }
 
             // Get the absolute path to the application project.
             String projectPath = project.getPath();
             if (projectPath == null) {
+                terminateLaunch(iProject);
                 throw new Exception("Unable to find the path to selected project " + projectName);
             }
 
@@ -346,6 +365,7 @@ public class DevModeOperations {
             } else if (buildType == Project.BuildType.GRADLE) {
                 cmd = CommandBuilder.getGradleCommandLine(projectPath, "libertyDevc " + startParms, pathEnv, true);
             } else {
+                terminateLaunch(iProject);
                 throw new Exception("Unexpected project build type: " + buildType + ". Project " + projectName
                         + "does not appear to be a Maven or Gradle built project.");
             }
@@ -363,6 +383,7 @@ public class DevModeOperations {
                 Trace.getTracer().trace(Trace.TRACE_TOOLS, msg, e);
             }
             ErrorHandler.processErrorMessage(NLS.bind(Messages.start_container_general_error, projectName), e, true);
+            terminateLaunch(iProject);
             return;
         }
 
@@ -375,8 +396,10 @@ public class DevModeOperations {
      * Stops the Liberty server.
      * 
      * @param inputProject The project instance to associate with this action.
+     * 
+     * @throws Exception
      */
-    public void stop(IProject inputProject) {
+    public void stop(IProject inputProject) throws Exception {
         // Get the object representing the selected application project. The returned project should never be null, but check it
         // just in case it is.
         IProject iProject = inputProject;
@@ -394,6 +417,7 @@ public class DevModeOperations {
                 Trace.getTracer().trace(Trace.TRACE_TOOLS, msg + " No-op.");
             }
             ErrorHandler.processErrorMessage(NLS.bind(Messages.stop_no_project_found, null), true);
+            terminateLaunch(inputProject);
             return;
         }
 
@@ -415,6 +439,7 @@ public class DevModeOperations {
         if (projectTabController.isProjectTabMarkedClosed(projectName)) {
             String msg = NLS.bind(Messages.stop_terminal_not_active, projectName);
             handleStopActionError(projectName, msg);
+            terminateLaunch(inputProject);
 
             return;
         }
@@ -441,10 +466,33 @@ public class DevModeOperations {
             handleStopActionError(projectName, msg);
 
             return;
+        } finally {
+            terminateLaunch(iProject);
         }
 
         if (Trace.isEnabled()) {
             Trace.getTracer().traceExit(Trace.TRACE_TOOLS, projectName);
+        }
+    }
+
+    @SuppressWarnings("restriction")
+    private void terminateLaunch(IProject project) throws Exception {
+
+        LaunchConfigurationHelper launchConfigHelper = LaunchConfigurationHelper.getInstance();
+        ILaunchConfiguration configuration = launchConfigHelper.getLaunchConfiguration(project, null, RuntimeEnv.UNKNOWN);
+
+        ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
+        ILaunch[] launches = launchManager.getLaunches();
+        for (ILaunch iLaunch : launches) {
+            if (configuration.contentsEqual(iLaunch.getLaunchConfiguration())) {
+                // ((Launch) iLaunch).terminate();
+
+                // DebugUIPlugin.getDefault().getLaunchingResourceManager().launchesTerminated(new ILaunch[] { iLaunch });
+                // ((LaunchManager) launchManager).fireUpdate(iLaunch, LaunchManager.TERMINATE);
+                // ((LaunchManager) launchManager).fireUpdate(new ILaunch[] { iLaunch }, LaunchManager.TERMINATE);
+                // DebugPlugin.getDefault().removeDebugEventListener((Launch) iLaunch);
+                // launchManager.removeLaunch(iLaunch);
+            }
         }
     }
 
